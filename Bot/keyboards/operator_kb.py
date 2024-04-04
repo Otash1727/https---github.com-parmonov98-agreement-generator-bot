@@ -36,9 +36,6 @@ def customer_info_edit(cont_id):
     new_contract=InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(text=f'Shartnoma raqami - {get_id.contract_number}',callback_data=f'ID {get_id.contract_number}')
-            ],
-            [
                 InlineKeyboardButton(text='F.I.SH',callback_data=f'full_name {get_id.contract_number}'),
                 InlineKeyboardButton(text='Yashash joyi',callback_data=f'place_of {get_id.contract_number}')
             ],
@@ -62,7 +59,7 @@ def customer_info_edit(cont_id):
                 InlineKeyboardButton(text="Oylar Soni",callback_data=f'month {get_id.contract_number}')
             ],
             [
-                InlineKeyboardButton(text="🔙",callback_data=f'back_pdf {get_id.contract_number}')
+                InlineKeyboardButton(text="↩️",callback_data=f'back_pdf {get_id.contract_number}')
             ]
         ]
     )

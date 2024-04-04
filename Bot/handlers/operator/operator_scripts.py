@@ -594,6 +594,8 @@ async def pdf_downloand(callback: CallbackQuery):
         doc.save(temp_file_path)
 
         dd = await callback.message.reply_document(document=FSInputFile(filename=f"{get_cus.full_name}.docx", path=temp_file_path))
+    
+        customer_functions.add_file_Id(dd=dd.document.file_id,cont_id=cont_id)
 
 @router.message(F.text=='Qidiruv (shartnomalar)')
 async def search_by_operator(message:Message):
