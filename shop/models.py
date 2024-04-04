@@ -7,6 +7,7 @@ from django.utils import timezone
 class Creator(models.Model):
     user_name=models.CharField(max_length=50)
     user_id=models.IntegerField()
+    username=models.CharField(max_length=100,null=True,blank=True)
     bot_id=models.IntegerField(null=True,blank=True)
     last_button_text=models.CharField(max_length=50,null=True,blank=True)
     msg_id=models.IntegerField(null=True,blank=True)

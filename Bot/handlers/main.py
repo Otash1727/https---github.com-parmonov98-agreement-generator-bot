@@ -38,6 +38,11 @@ async def run_bot(message:Message,state:FSMContext):
     if check_creator==True:
         await bot.send_message(chat_id=message.from_user.id,text="<b>Admin Paneliga xush kelibsiz</b>",reply_markup=admin_kb.admin_markup,parse_mode=ParseMode.HTML)
         await set_commands.set_commands(message=message.from_user.id)
+        user=await bot.get_chat(chat_id=message.from_user.id)
+        if user.username:
+            admin_functions.add_username_admin(Username=user.username,user_id=message.from_user.id)
+        else:
+            pass
        
     elif check_operator==True:
         get_operator=operator_functions.get_operator(user_id=message.from_user.id)

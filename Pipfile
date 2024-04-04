@@ -10,6 +10,7 @@ aiogram = {extras = ["contrib"], version = "*"}
 forex-python = "*"
 python-dateutil = "*"
 docx2pdf = "*"
+fpdf = "*"
 
 [dev-packages]
 

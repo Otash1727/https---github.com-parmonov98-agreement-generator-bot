@@ -9,6 +9,10 @@ def check_creator(user_id):
         return True
     except ObjectDoesNotExist:
         return False    
+def add_username_admin(user_id,Username):
+    data=Creator.objects.get(user_id=user_id)
+    data.username=Username
+    data.save()
 
 def get_creator_all():
     data=Creator.objects.all()

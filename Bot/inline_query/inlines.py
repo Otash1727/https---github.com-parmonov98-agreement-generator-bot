@@ -42,8 +42,16 @@ async def download_customer_info(callback:CallbackQuery):
     else:
         await bot.send_message(chat_id=callback.from_user.id,text="<b>Siz admin emassiz\nSog' bo'ling</b>",parse_mode=ParseMode.HTML)
  
-
-   
+@router.inline_query(F.query=='connect')
+async def deep_link_admin(query:InlineQuery):
+    check_operator=operator_functions.check_operator(user_id=query.from_user.id)
+    
+    if check_operator==True:
+        get_admin=admin_functions.get_creator_all()
+        results=[InlineQueryResultArticle(id=str(i.user_id),title=f"Admin - {i.user_name}",description="Bo'glanish uchun",input_message_content=InputTextMessageContent(message_text=f"Admin - {i.user_name}\nBog'lanish - https://t.me/{i.username}",parse_mode=ParseMode.HTML))for i in get_admin]
+        await query.answer(results=results,is_personal=True)
+    else:
+        await operator_functions.fake_operator(chat_id=query.from_user.id)
 
 @router.inline_query(F.query.startswith('search#'))
 async def search_operator(query:InlineQuery):

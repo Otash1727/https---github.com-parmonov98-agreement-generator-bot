@@ -18,8 +18,7 @@ from forex_python.converter import CurrencyRates
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from dateutil.relativedelta import relativedelta
 from docx.shared import Pt
-from docx2pdf import convert
-
+import docx2pdf 
 
 
 router=Router()
@@ -585,16 +584,16 @@ async def pdf_downloand(callback: CallbackQuery):
             run.font.size = Pt(12)
             if 'SHARTNOMA' in paragraph.text:
                 run.bold=True
-
-    # Save the modified document to a BytesIO object
+    import os
     modified_file = io.BytesIO()
     doc.save(modified_file)
     modified_file.seek(0)
-    with tempfile.NamedTemporaryFile(suffix='.docx', delete=False) as temp_file:
+
+    with tempfile.NamedTemporaryFile(suffix='.doc', delete=False) as temp_file:
         temp_file_path = temp_file.name
         doc.save(temp_file_path)
-   
-    dd = await callback.message.reply_document(document=FSInputFile(filename=f"{get_cus.full_name}.docx", path=temp_file_path))
+
+        dd = await callback.message.reply_document(document=FSInputFile(filename=f"{get_cus.full_name}.docx", path=temp_file_path))
 
 @router.message(F.text=='Qidiruv (shartnomalar)')
 async def search_by_operator(message:Message):
