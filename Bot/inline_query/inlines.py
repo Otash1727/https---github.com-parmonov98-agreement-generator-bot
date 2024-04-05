@@ -55,22 +55,20 @@ async def deep_link_admin(query:InlineQuery):
 
 @router.inline_query(F.query.startswith('search#'))
 async def search_operator(query:InlineQuery):
-    print(1)
     check_oper=operator_functions.check_operator(user_id=query.from_user.id)
     if check_oper==True:
         get_opr=operator_functions.get_operator(user_id=query.from_user.id)
         if get_opr.is_active==True:
             split_query=query.query.split('search#')
-            print(split_query)
             if split_query[1] is not None:
                 get_sdd=customer_functions.search_customer(query=query,oper_id=get_opr.user_id)
                 result=[InlineQueryResultArticle(id=str(i.pk),title=f"Shartnoma raqami - {i.contract_number}",description=f"F.I.SH - {i.full_name}\nTelefon raqam - {i.phone_number}",input_message_content=InputTextMessageContent(message_text=f"<b>F.I.SH - {i.full_name}\nYashash manzili - {i.place_of_residence}\nTelefon raqami - {i.phone_number}\nPasport(Seriyasi) - {i.passport_infos}\nPasport berilgan vaqti - {i.date_of_issue}\nMahsulot nomi - {i.item_name}\nOldindan to'lov - {i.advance_payment}\nUmumiy qarz - {i.total_debt}\nMahsulotni umumiy narxi - {i.total_price}\nOylik to'lov - {i.montly_payment}\nOylar soni - {i.months} </b>",parse_mode=ParseMode.HTML),reply_markup=customer_functions.customer_message_reply2(cont_id=i.contract_number))for i in get_sdd]
-                response=await query.answer(results=result,is_personal=True)
+                await query.answer(results=result,is_personal=True)
             
             else:
                 get_customers=customer_functions.get_customer_WhichOpr(opr_id=query.from_user.id)
                 result=[InlineQueryResultArticle(id=str(i.pk),title=f"Shartnoma raqami - {i.contract_number}",description=f"F.I.SH - {i.full_name}\nTelefon raqam - {i.phone_number}",input_message_content=InputTextMessageContent(message_text=f"<b>F.I.SH - {i.full_name}\nYashash manzili - {i.place_of_residence}\nTelefon raqami - {i.phone_number}\nPasport(Seriyasi) - {i.passport_infos}\nPasport berilgan vaqti - {i.date_of_issue}\nMahsulot nomi - {i.item_name}\nOldindan to'lov - {i.advance_payment}\nUmumiy qarz - {i.total_debt}\nMahsulotni umumiy narxi - {i.total_price}\nOylik to'lov - {i.montly_payment}\nOylar soni - {i.months} </b>",parse_mode=ParseMode.HTML),reply_markup=customer_functions.customer_message_reply2(cont_id=i.contract_number))for i in get_customers]
-                response=await query.answer(results=result,is_personal=True)
+                await query.answer(results=result,is_personal=True)
             
         else:
             await operator_functions.is_active_message(user_id=query.from_user.id,chat_id=query.from_user.id)

@@ -531,10 +531,11 @@ async def back_to_pdf(callback:CallbackQuery):
 
 @router.callback_query(lambda x:x.data and x.data.startswith("pdf "))
 async def pdf_downloand(callback: CallbackQuery):
-    print('pdf')
+
     cont_id = callback.data.replace('pdf ', '')
     doc = Document('Example/example.docx')
     get_cus=customer_functions.get_customer(cont_id=cont_id)
+   
     for paragraph in doc.paragraphs:
         paragraph.text = paragraph.text.replace('PK',f"{get_cus.contract_number}")
         paragraph.text = paragraph.text.replace('DATETIME', f'{(get_cus.created_at.date()).strftime("%d.%m.%Y")}')
@@ -569,7 +570,7 @@ async def pdf_downloand(callback: CallbackQuery):
         paragraph=new_row.cells[2].paragraphs[0]
         # Set paragraph alignment to center
         paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-    date_str = "04-04-2024"
+    
 
 # Convert string to datetime object
     datetime_obj = datetime.strptime(date_str, "%d-%m-%Y")
@@ -577,30 +578,38 @@ async def pdf_downloand(callback: CallbackQuery):
 # Format datetime object to DD.MM.YYYY format
     formatted_date = datetime_obj.strftime("%d.%m.%Y")
 
-    print(formatted_date)  # Output: 04.04.2024
+
     for paragraph in doc.paragraphs:
         for run in paragraph.runs:
             run.font.name = 'Times New Roman'
             run.font.size = Pt(12)
             if 'SHARTNOMA' in paragraph.text:
                 run.bold=True
-    import os
-    modified_file = io.BytesIO()
+    
+    modified_file =io.BytesIO()
     doc.save(modified_file)
     modified_file.seek(0)
+    modified_file_content=modified_file.getvalue()
 
-    with tempfile.NamedTemporaryFile(suffix='.doc', delete=False) as temp_file:
+
+    # Converting the modified document from DOCX to PDF
+    with tempfile.NamedTemporaryFile(suffix='.docx', delete=False) as temp_file:
+        temp_file.write(modified_file_content)
         temp_file_path = temp_file.name
-        doc.save(temp_file_path)
 
-        dd = await callback.message.reply_document(document=FSInputFile(filename=f"{get_cus.full_name}.docx", path=temp_file_path))
-    
-        customer_functions.add_file_Id(dd=dd.document.file_id,cont_id=cont_id)
+# Convert the temporary DOCX file to PDF
+    pdf_output_path = temp_file_path.replace('.docx', '.pdf')
+    docx2pdf.convert(temp_file_path, pdf_output_path)
+    dd = await callback.message.reply_document(document=FSInputFile(filename=f"{get_cus.full_name}.pdf", path=pdf_output_path))
+
+    if dd.document:
+        customer_functions.add_file_Id(dd=dd.document.file_id, cont_id=cont_id)
+        operator_functions.add_msg_id4_opr(user_id=callback.from_user.id,msg_id=dd.message_id)    
 
 @router.message(F.text=='Qidiruv (shartnomalar)')
 async def search_by_operator(message:Message):
     #await bot.delete_message(chat_id=message.from_user.id,message_id=message.message_id)
-    time.sleep(1)
+    time.sleep(0.5)
     msg_id=await message.answer(text="<b>Shartnomlariz ro'yhati</b>",parse_mode=ParseMode.HTML,reply_markup=operator_kb.search_operator)
     #operator_functions.add_msg_id_opr(user_id=message.from_user.id,msg_id=msg_id.message_id)
     
